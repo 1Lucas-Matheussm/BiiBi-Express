@@ -23,13 +23,40 @@ class UserFactory extends Factory
      */
     public function definition(): array
     {
-        return [
+
+        $role = fake()->randomElement(['cliente', 'entregador', 'empresa']);
+
+        $attributes = [
             'name' => fake()->name(),
             'email' => fake()->unique()->safeEmail(),
             'email_verified_at' => now(),
             'password' => static::$password ??= Hash::make('password'),
             'remember_token' => Str::random(10),
+
+            'phone' => fake()->phoneNumber(),
+            'document' => fake()->numerify('##############'),
+            'address' => fake()->address(),
+
+            'role' => $role,
+            'email_verified' => true,
+
+            'vehicle_type' => null,
+            'plate' => null,
+            'rating' => null,
+            'company_name' => null,
         ];
+
+        if ($role === 'entregador') {
+            $attributes['vehicle_type'] = fake()->randomElement(['moto', 'carro', 'bicicleta']);
+            $attributes['plate'] = strtoupper(fake()->bothify('???-####'));
+            $attributes['rating'] = fake()->randomFloat(2, 3, 5);
+        }
+
+        if ($role === 'empresa') {
+            $attributes['company_name'] = fake()->company();
+        }
+
+        return $attributes;
     }
 
     /**
@@ -37,7 +64,7 @@ class UserFactory extends Factory
      */
     public function unverified(): static
     {
-        return $this->state(fn (array $attributes) => [
+        return $this->state(fn(array $attributes) => [
             'email_verified_at' => null,
         ]);
     }
