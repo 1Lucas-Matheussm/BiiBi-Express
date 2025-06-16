@@ -21,7 +21,6 @@ class FeedbackFactory extends Factory
         return [
             'user_id' => User::factory(),
             'order_id' => Orders::factory(),
-            'rating' => $this->faker->randomFloat(1, 1, 5),
             'comment' => $this->faker->optional()->sentence(),
         ];
     }

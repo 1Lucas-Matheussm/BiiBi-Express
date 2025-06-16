@@ -12,7 +12,6 @@ class Feedback extends Model
     protected $fillable = [
         'user_id',
         'order_id',
-        'rating',
         'comment',
     ];
 

@@ -23,36 +23,29 @@ class UserFactory extends Factory
      */
     public function definition(): array
     {
-
-        $role = fake()->randomElement(['cliente', 'entregador', 'empresa']);
+        $type = fake()->numberBetween(1, 3); // 1 = cliente, 2 = entregador, 3 = empresa
 
         $attributes = [
-            'name' => fake()->name(),
+            'name' => fake()->unique()->name(),
             'email' => fake()->unique()->safeEmail(),
             'email_verified_at' => now(),
             'password' => static::$password ??= Hash::make('password'),
             'remember_token' => Str::random(10),
-
             'phone' => fake()->phoneNumber(),
             'document' => fake()->numerify('##############'),
-            'address' => fake()->address(),
-
-            'role' => $role,
+            'type' => $type,
             'email_verified' => true,
-
             'vehicle_type' => null,
             'plate' => null,
-            'rating' => null,
             'company_name' => null,
         ];
 
-        if ($role === 'entregador') {
+        if ($type === 2) {
             $attributes['vehicle_type'] = fake()->randomElement(['moto', 'carro', 'bicicleta']);
             $attributes['plate'] = strtoupper(fake()->bothify('???-####'));
-            $attributes['rating'] = fake()->randomFloat(2, 3, 5);
         }
 
-        if ($role === 'empresa') {
+        if ($type === 3) {
             $attributes['company_name'] = fake()->company();
         }
 

@@ -13,31 +13,44 @@ use Illuminate\Validation\ValidationException;
 class AuthController extends Controller
 {
     public function register(Request $request)
-{
+    {
+        $validator = Validator::make($request->all(), [
+            'name' => 'required|string|max:255|unique:users',
+            'email' => 'required|string|email|max:255|unique:users',
+            'password' => 'required|string|min:8|confirmed',
+            'phone' => 'required|string|max:20',
+            'document' => 'required|string|max:20',
+            'type' => 'required|integer|in:1,2,3', // 1 = cliente, 2 = entregador, 3 = empresa
+            'vehicle_type' => 'nullable|string|max:50',
+            'plate' => 'nullable|string|max:20',
+            'company_name' => 'nullable|string|max:255',
+        ]);
 
-    $validator = Validator::make($request->all(), [
-        'name' => 'required|string|max:255',
-        'email' => 'required|string|email|max:255|unique:users',
-        'password' => 'required|string|min:8|confirmed',
-    ]);
 
-    if ($validator->fails()) {
-        return response()->json(['errors' => $validator->errors()], 422);
+        if ($validator->fails()) {
+            return response()->json(['errors' => $validator->errors()], 422);
+        }
+
+        $user = User::create([
+            'name' => $request->name,
+            'email' => $request->email,
+            'password' => Hash::make($request->password),
+            'phone' => $request->phone,
+            'document' => $request->document,
+            'type' => $request->type,
+            'vehicle_type' => $request->vehicle_type,
+            'plate' => $request->plate,
+            'company_name' => $request->company_name,
+        ]);
+
+        $token = $user->createToken('API Token')->plainTextToken;
+
+        return response()->json([
+            'message' => 'Usuário registrado com sucesso.',
+            'token' => $token,
+        ], 201);
     }
 
-    $user = User::create([
-        'name' => $request->name,
-        'email' => $request->email,
-        'password' => Hash::make($request->password),
-    ]);
-
-     $token = $user->createToken('API Token')->plainTextToken;
-
-    return response()->json([
-        'message' => 'Usuário registrado com sucesso.',
-        'token' => $token,
-    ], 201);
-}
 
 
 

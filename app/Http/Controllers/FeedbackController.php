@@ -23,7 +23,6 @@ class FeedbackController extends Controller
         $validated = $request->validate([
             'user_id' => 'required|exists:users,id',
             'order_id' => 'required|exists:orders,id',
-            'rating' => 'required|numeric|min:1|max:5',
             'comment' => 'nullable|string',
         ]);
 
@@ -47,7 +46,6 @@ class FeedbackController extends Controller
     public function update(Request $request, Feedback $feedback)
     {
         $validated = $request->validate([
-            'rating' => 'sometimes|numeric|min:1|max:5',
             'comment' => 'nullable|string',
         ]);
 

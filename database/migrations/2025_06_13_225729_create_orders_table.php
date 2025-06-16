@@ -14,21 +14,20 @@ return new class extends Migration
         Schema::create('orders', function (Blueprint $table) {
             $table->id();
 
-            $table->foreignId('user_id')->constrained()->onDelete('cascade');
+            $table->foreignId('user_id')->nullable()->constrained()->onDelete('cascade');
             $table->foreignId('delivery_person_id')->nullable()->constrained('users')->onDelete('set null');
             $table->foreignId('company_id')->nullable()->constrained('users')->onDelete('set null');
 
-            $table->enum('status', ['pendente', 'em_andamento', 'entregue', 'cancelado'])->default('pendente');
+            $table->integer('status')->default('1'); // 1: pendente, 2: em_andamento, 3: entregue, 4: cancelado
             $table->string('origin_address');
             $table->string('destination_address');
 
             $table->decimal('total_price', 8, 2);
             $table->enum('payment_method', ['pix', 'cartao', 'dinheiro']);
-            $table->text('observations')->nullable();
+            $table->text('observations');
 
-            $table->float('height')->nullable();
-            $table->float('width')->nullable();
-            $table->float('length')->nullable();
+            $table->integer('package_size'); // 1: pequeno, 2: medio, 3: grande
+            $table->boolean('fragile');
 
             $table->timestamps();
         });

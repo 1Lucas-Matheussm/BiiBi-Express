@@ -15,22 +15,20 @@ return new class extends Migration
             $table->id();
 
             // Informações básicas
-            $table->string('name');
+            $table->string('name')->unique();
             $table->string('email')->unique();
             $table->string('password');
             $table->string('phone');
             $table->string('document'); // CPF ou CNPJ
-            $table->string('address');
 
             // Perfil do usuário
-            $table->enum('role', ['cliente', 'entregador', 'empresa'])->default('cliente');
+            $table->integer('type')->default('1');
             $table->boolean('email_verified')->default(false);
             $table->timestamp('email_verified_at')->nullable();
 
             // Campos para entregadores
             $table->string('vehicle_type')->nullable();
             $table->string('plate')->nullable();
-            $table->float('rating')->nullable();
 
             // Empresa/parceiro
             $table->string('company_name')->nullable();
